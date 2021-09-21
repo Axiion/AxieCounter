@@ -14,7 +14,8 @@ class _myAppState extends State<myApp> {
   int energy = 3;
   int cards = 6;
   int destroy = 0,
-      steal = 0,
+      success_steal = 0,
+      failed_steal = 0,
       zero = 0,
       one = 0,
       two = 0,
@@ -70,7 +71,7 @@ class _myAppState extends State<myApp> {
                             energy = 3;
                             cards = 6;
                             one = two =
-                                zero = destroy = steal = draw = discard = 0;
+                                zero = destroy = failed_steal = success_steal = draw = discard = 0;
                           });
                         },
                         child: Text(
@@ -168,9 +169,9 @@ class _myAppState extends State<myApp> {
                                     onPressed: () {
                                       print("-1 Steal.");
                                       setState(() {
-                                        steal -= 1;
-                                        if (steal < 0) {
-                                          steal = 0;
+                                        failed_steal -= 1;
+                                        if (failed_steal < 0) {
+                                          failed_steal = 0;
                                         }
                                       });
                                     },
@@ -179,9 +180,9 @@ class _myAppState extends State<myApp> {
                                 ),
                                 SizedBox(width: 7),
                                 Text(
-                                  "Steal: $steal",
+                                  "Failed Steal: $failed_steal",
                                   style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 16,
                                     fontFamily: "Noto Sans JP",
                                   ),
                                 ),
@@ -194,7 +195,7 @@ class _myAppState extends State<myApp> {
                                     onPressed: () {
                                       print("+1 Steal.");
                                       setState(() {
-                                        steal += 1;
+                                        failed_steal += 1;
                                       });
                                     },
                                     child: Text("+"),
@@ -205,7 +206,52 @@ class _myAppState extends State<myApp> {
                           ),
                           Expanded(
                             flex: 5,
-                            child: Container(),
+                            child: Row(
+                              // - 1 Cost Cards +
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  // minus button
+                                  width: 30,
+                                  child: FloatingActionButton(
+                                    onPressed: () {
+                                      print("-1 1 card.");
+                                      setState(() {
+                                        success_steal -= 1;
+                                        if (success_steal < 0) {
+                                          success_steal = 0;
+                                        }
+                                      });
+                                    },
+                                    child: Text("-"),
+                                  ),
+                                ),
+                                SizedBox(width: 6),
+                                Text(
+                                  "Successful Steal: $success_steal",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontFamily: "Noto Sans JP",
+                                  ),
+                                ),
+                                //updating $cardsPlayed whenever buttons are pressed
+                                SizedBox(width: 6),
+                                SizedBox(
+                                  //plus button
+                                  width: 30,
+                                  child: FloatingActionButton(
+                                    onPressed: () {
+                                      print("+1 1 card.");
+                                      setState(() {
+                                        success_steal += 1;
+                                      });
+                                    },
+                                    child: Text("+"),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -488,8 +534,8 @@ class _myAppState extends State<myApp> {
                           setState(() {
                             roundNum += 1;
                             two *= 2;
-                            cardsPlayed = zero + one + two;
-                            energy = energy - (destroy + steal + one + two);
+                            cardsPlayed = zero + one + two + success_steal + failed_steal;
+                            energy = energy - (destroy + failed_steal + one + two);
                             if (energy < 0) {
                               energy = 0;
                             }
@@ -497,7 +543,6 @@ class _myAppState extends State<myApp> {
                             if (energy > 10) {
                               energy = 10;
                             }
-
                             cards = cards - (cardsPlayed + discard);
                             if (cards < 0) {
                               cards = 0;
@@ -506,7 +551,7 @@ class _myAppState extends State<myApp> {
                             if (cards > 9) {
                               cards = 9;
                             }
-                            one = two = zero = destroy = steal = draw = discard = 0;
+                            one = two = zero = destroy = failed_steal = success_steal = draw = discard = 0;
                           });
                         },
                         child: Text(
