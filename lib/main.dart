@@ -14,7 +14,7 @@ class _myAppState extends State<myApp> {
   int roundNum = 1;
   int energy = 3;
   int cards = 6;
-  int deck = 24;
+  int deck = 18;
   int destroy = 0,
       gain = 0,
       steal = 0,
@@ -53,7 +53,7 @@ class _myAppState extends State<myApp> {
                     roundNum = 1;
                     energy = 3;
                     cards = 6;
-                    deck = 24;
+                    deck = 18;
                     one = two =
                         zero = gain = destroy = steal = draw = discard = 0;
                   });
@@ -298,8 +298,8 @@ class _myAppState extends State<myApp> {
                               print("+1 0 card.");
                               setState(() {
                                 zero += 1;
-                                if (zero > deck) {
-                                  zero = deck;
+                                if (zero > cards) {
+                                  zero = cards;
                                 }
                               });
                             },
@@ -347,8 +347,8 @@ class _myAppState extends State<myApp> {
                               print("+1 1 card.");
                               setState(() {
                                 one += 1;
-                                if (one > deck) {
-                                  one = deck;
+                                if (one > cards) {
+                                  one = cards;
                                 }
                               });
                             },
@@ -396,8 +396,8 @@ class _myAppState extends State<myApp> {
                               print("+1 2 card.");
                               setState(() {
                                 two += 1;
-                                if (two > deck) {
-                                  two = deck;
+                                if (two > cards) {
+                                  two = cards;
                                 }
                               });
                             },
