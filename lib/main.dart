@@ -23,7 +23,8 @@ class _myAppState extends State<myApp> {
       two = 0,
       discard = 0,
       draw = 0,
-      cardsPlayed = 0;
+      cardsPlayed = 0,
+      bloodMoon = 50;
 
   @override
   Widget build(BuildContext context) {
@@ -43,22 +44,22 @@ class _myAppState extends State<myApp> {
               transform: Matrix4.rotationY(math.pi),
               alignment: Alignment.center,
               child: IconButton(
-                icon: Icon(
-                  Icons.replay,
-                  size: 30,
-                ),
-                onPressed: () {
-                  print("Reset Button pressed.");
-                  setState(() {
-                    roundNum = 1;
-                    energy = 3;
-                    cards = 6;
-                    deck = 18;
-                    one = two =
-                        zero = gain = destroy = steal = draw = discard = 0;
-                  });
-                }
-              ),
+                  icon: Icon(
+                    Icons.replay,
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    print("Reset Button pressed.");
+                    setState(() {
+                      roundNum = 1;
+                      energy = 3;
+                      cards = 6;
+                      deck = 18;
+                      one = two =
+                          zero = gain = destroy = steal = draw = discard = 0;
+                      bloodMoon = 50;
+                    });
+                  }),
             )
           ],
         ),
@@ -88,6 +89,14 @@ class _myAppState extends State<myApp> {
                     ),
                   ),
                 ),
+                if (roundNum >= 10)
+                  Text(
+                    "Blood Moon Damage: $bloodMoon",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: "Noto Sans JP",
+                    ),
+                  ),
               ],
             ),
             Column(
@@ -148,7 +157,8 @@ class _myAppState extends State<myApp> {
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          fixedSize: Size(double.infinity, MediaQuery.of(context).size.height / 14),
+                          fixedSize: Size(double.infinity,
+                              MediaQuery.of(context).size.height / 14),
                         ),
                       ),
                     ),
@@ -165,7 +175,8 @@ class _myAppState extends State<myApp> {
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          fixedSize: Size(double.infinity, MediaQuery.of(context).size.height / 14),
+                          fixedSize: Size(double.infinity,
+                              MediaQuery.of(context).size.height / 14),
                         ),
                       ),
                     ),
@@ -182,7 +193,8 @@ class _myAppState extends State<myApp> {
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          fixedSize: Size(double.infinity, MediaQuery.of(context).size.height / 14),
+                          fixedSize: Size(double.infinity,
+                              MediaQuery.of(context).size.height / 14),
                         ),
                       ),
                     ),
@@ -195,31 +207,7 @@ class _myAppState extends State<myApp> {
               onPressed: () {
                 print("I set a trap card and end my turn!");
                 setState(() {
-                  roundNum += 1;
-                  two *= 2;
-                  cardsPlayed = zero + one + two;
-                  energy = energy - (destroy + steal + one + two);
-                  if (energy < 0) {
-                    energy = 0;
-                  }
-                  energy += gain + 2;
-                  if (energy > 10) {
-                    energy = 10;
-                  }
-                  cards = cards - (cardsPlayed + discard);
-                  if (cards < 0) {
-                    cards = 0;
-                  }
-                  cards += draw + 3;
-                  if (cards > 9) {
-                    cards = 9;
-                  }
-                  deck -= (cardsPlayed + discard + draw + 3);
-                  if (deck <= 0) {
-                    deck += 24;
-                  }
-                  one =
-                      two = zero = gain = destroy = steal = draw = discard = 0;
+                  endTurn();
                 });
               },
               child: Text(
@@ -229,22 +217,49 @@ class _myAppState extends State<myApp> {
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                fixedSize: Size(double.infinity, MediaQuery.of(context).size.height / 15),
+                fixedSize: Size(
+                    double.infinity, MediaQuery.of(context).size.height / 15),
               ),
             ),
             Divider(height: MediaQuery.of(context).size.height / 20),
             Container(
                 child: Align(
                     alignment: Alignment.centerRight,
-                    child: Text(
-                        "2021 \u00a9 Matthew Ang"
-                    )
-                )
-            )
+                    child: Text("2021 \u00a9 Matthew Ang")))
           ],
         ),
       ),
     );
+  }
+
+  endTurn() {
+    roundNum += 1;
+    if (roundNum > 10) {
+      bloodMoon += 30;
+    }
+    two *= 2;
+    cardsPlayed = zero + one + two;
+    energy = energy - (destroy + steal + one + two);
+    if (energy < 0) {
+      energy = 0;
+    }
+    energy += gain + 2;
+    if (energy > 10) {
+      energy = 10;
+    }
+    cards = cards - (cardsPlayed + discard);
+    if (cards < 0) {
+      cards = 0;
+    }
+    cards += draw + 3;
+    if (cards > 12) {
+      cards = 12;
+    }
+    deck -= (cardsPlayed + discard + draw + 3);
+    if (deck <= 0) {
+      deck += 24;
+    }
+    one = two = zero = gain = destroy = steal = draw = discard = 0;
   }
 
   costDialog(BuildContext context) {
